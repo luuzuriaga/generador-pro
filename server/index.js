@@ -11,7 +11,7 @@ const app = express();
 
 // 1. CONFIGURACIÓN DE CORS (Debe ser lo primero)
 app.use(cors({
-    origin: ['http://127.0.0.1:5500', 'http://localhost:5500'],
+    origin: 'https://generadorpro.netlify.app',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token']
