@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Contraseñas Seguras</title>
+    <meta name="description" content="Generador de contraseñas aleatorias y seguras con opciones personalizables.">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="main-nav">
+        <div class="nav-brand">
+            <span class="brand-text">VaultPro</span>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <!-- Cargado dinámicamente: Login/Register o Perfil/Bóveda -->
+            <button id="loginOpen" class="nav-btn">Entrar</button>
+            <button id="registerOpen" class="nav-btn accent">Registrarse</button>
+        </div>
+    </nav>
+
+    <!-- Modales de Autenticación -->
+    <div id="authModal" class="modal">
+        <div class="modal-content glass">
+            <span class="close-modal">&times;</span>
+            <div id="loginFormContainer" class="auth-form-container">
+                <h2>Bienvenido de nuevo</h2>
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label>Correo Electrónico</label>
+                        <input type="email" id="loginEmail" required placeholder="tu@email.com">
+                    </div>
+                    <div class="input-group">
+                        <label>Contraseña</label>
+                        <input type="password" id="loginPassword" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="primary-button">Iniciar Sesión</button>
+                    <p class="switch-auth">¿No tienes cuenta? <a href="#" id="toRegister">Regístrate</a></p>
+                </form>
+            </div>
+
+            <div id="registerFormContainer" class="auth-form-container hidden">
+                <h2>Crea tu cuenta</h2>
+                <form id="registerForm">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Nombre</label>
+                            <input type="text" id="regFirstName" required placeholder="Nombre">
+                        </div>
+                        <div class="input-group">
+                            <label>Apellido</label>
+                            <input type="text" id="regLastName" required placeholder="Apellido">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Correo Electrónico</label>
+                        <input type="email" id="regEmail" required placeholder="tu@email.com">
+                    </div>
+                    <div class="input-group">
+                        <label>Contraseña</label>
+                        <input type="password" id="regPassword" required placeholder="Mín. 8 caracteres">
+                    </div>
+                    <button type="submit" class="primary-button">Registrarse</button>
+                    <p class="switch-auth">¿Ya tienes cuenta? <a href="#" id="toLogin">Inicia Sesión</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+    <main class="app-container">
+        <header class="app-header">
+            <h1>Generador de Contraseñas</h1>
+            <p>Crea contraseñas seguras al instante</p>
+        </header>
+
+        <section class="password-display" id="passwordDisplayContainer">
+            <div class="result-container">
+                <span id="passwordResult" class="password-text">********</span>
+                <div class="action-buttons">
+                    <button id="toggleVisibility" title="Mostrar/Ocultar" aria-label="Mostrar u ocultar contraseña">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="icon-eye">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                    </button>
+                    <button id="copyPassword" title="Copiar" aria-label="Copiar contraseña al portapapeles">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="icon-copy">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div id="saveLabelGroup" class="save-label-group hidden">
+                <input type="text" id="passwordLabel" placeholder="Etiqueta (ej: Mi Gmail)">
+                <button id="confirmSave" class="nav-btn accent">Guardar</button>
+            </div>
+            <div class="strength-meter">
+                <div id="strengthBar" class="strength-bar"></div>
+                <span id="strengthText" class="strength-text">Fortaleza: -</span>
+            </div>
+            <div id="feedbackMessage" class="feedback-message"></div>
+        </section>
+
+        <section class="controls-card">
+            <div class="control-group">
+                <label for="lengthRange">Longitud: <span id="lengthValue">16</span></label>
+                <input type="range" id="lengthRange" min="8" max="50" value="16" step="1">
+            </div>
+
+            <div class="options-grid">
+                <label class="checkbox-container">
+                    <input type="checkbox" id="useUppercase" checked>
+                    <span class="checkmark"></span>
+                    Mayúsculas
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="useLowercase" checked>
+                    <span class="checkmark"></span>
+                    Minúsculas
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="useNumbers" checked>
+                    <span class="checkmark"></span>
+                    Números
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="useSymbols" checked>
+                    <span class="checkmark"></span>
+                    Símbolos
+                </label>
+            </div>
+
+            <button id="generateBtn" class="primary-button">Generar Contraseña</button>
+        </section>
+    </main>
+
+    <!-- Vista de Bóveda -->
+    <div id="vaultView" class="view-overlay hidden">
+        <div class="view-content glass">
+            <header class="view-header">
+                <h2>Tu Bóveda Segura</h2>
+                <button id="closeVault" class="nav-btn">Volver</button>
+            </header>
+            <div class="vault-controls">
+                <input type="text" id="vaultSearch" placeholder="Buscar contraseña...">
+                <button id="syncVault" class="nav-btn accent">Sincronizar</button>
+            </div>
+            <div class="vault-list" id="vaultList">
+                <!-- Cargado dinámicamente -->
+                <p class="empty-msg">Cargando tus secretos...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vista de Perfil -->
+    <div id="profileView" class="view-overlay hidden">
+        <div class="view-content glass">
+            <header class="view-header">
+                <h2>Tu Perfil</h2>
+                <button id="closeProfile" class="nav-btn">Volver</button>
+            </header>
+            <div class="profile-container">
+                <div class="profile-avatar">
+                    <img id="profileImg" src="img/favicon.png" alt="Avatar">
+                    <input type="file" id="avatarInput" hidden>
+                    <button class="edit-avatar" onclick="document.getElementById('avatarInput').click()">Cambiar
+                        Foto</button>
+                </div>
+                <form id="profileForm" class="auth-form-container">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Nombre</label>
+                            <input type="text" id="profFirstName">
+                        </div>
+                        <div class="input-group">
+                            <label>Apellido</label>
+                            <input type="text" id="profLastName">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="profEmail" readonly>
+                    </div>
+                    <button type="submit" class="primary-button">Guardar Cambios</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación de Eliminación -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content glass" style="max-width: 400px; text-align: center;">
+            <div class="modal-header">
+                <h2>¿Eliminar contraseña?</h2>
+            </div>
+            <p style="margin: 1.5rem 0; color: var(--text-dim); font-size: 1.4rem;">
+                Esta acción no se puede deshacer. La contraseña se eliminará permanently de tu bóveda.
+            </p>
+            <div class="modal-actions" style="display: flex; gap: 1rem; justify-content: center;">
+                <button id="cancelDelete" class="nav-btn">Cancelar</button>
+                <button id="confirmDelete" class="nav-btn"
+                    style="background: var(--danger); border-color: var(--danger); color: white;">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
